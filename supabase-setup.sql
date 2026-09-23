@@ -1,5 +1,4 @@
--- Supabase SQL Editorで一度だけ実行してください。
--- Storage画面で travel-memories という公開バケットを作成した後に実行します。
+-- Supabase SQL Editorで実行してください。何度実行しても安全です。
 
 create table if not exists public.travel_memory_photos (
   id uuid primary key default gen_random_uuid(),
@@ -9,6 +8,17 @@ create table if not exists public.travel_memory_photos (
 );
 
 alter table public.travel_memory_photos enable row level security;
+
+insert into storage.buckets (id, name, public)
+values ('travel-memories', 'travel-memories', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Anyone can view travel memories" on public.travel_memory_photos;
+drop policy if exists "Anyone can add travel memories" on public.travel_memory_photos;
+drop policy if exists "Anyone can delete travel memory records" on public.travel_memory_photos;
+drop policy if exists "Anyone can upload travel memory files" on storage.objects;
+drop policy if exists "Anyone can view travel memory files" on storage.objects;
+drop policy if exists "Anyone can delete travel memory files" on storage.objects;
 
 create policy "Anyone can view travel memories"
 on public.travel_memory_photos for select
