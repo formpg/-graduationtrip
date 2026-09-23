@@ -27,3 +27,13 @@ with check (bucket_id = 'travel-memories');
 create policy "Anyone can view travel memory files"
 on storage.objects for select
 using (bucket_id = 'travel-memories');
+
+create policy "Anyone can delete travel memory files"
+on storage.objects for delete
+to anon
+using (bucket_id = 'travel-memories');
+
+create policy "Anyone can delete travel memory records"
+on public.travel_memory_photos for delete
+to anon
+using (true);
